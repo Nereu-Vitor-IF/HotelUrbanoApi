@@ -12,11 +12,15 @@ import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = Usuario.NOME_TABELA)
 public class Usuario {
@@ -36,7 +40,7 @@ public class Usuario {
     @NotEmpty
     private String nome;
 
-    @Column(name = "telefone", length = 15)
+    @Column(name = "telefone", length = 15, nullable = true)
     private String telefone;
         
     @Column(name = "email", length = 100, nullable = false, unique = true)
