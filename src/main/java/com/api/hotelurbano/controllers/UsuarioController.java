@@ -50,7 +50,7 @@ public class UsuarioController {
     @Validated(AtualizarUsuario.class)
     public ResponseEntity<Void> atualizar(@Valid @RequestBody Usuario obj, @PathVariable Long id) {
         obj.setIdUsuario(id);
-        this.buscarPorId(obj.getIdUsuario());
+        this.usuarioService.atualizar(obj);
         return ResponseEntity.noContent().build();
     }
 
