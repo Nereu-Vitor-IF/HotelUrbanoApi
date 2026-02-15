@@ -1,6 +1,7 @@
 package com.api.hotelurbano.controllers;
 
 import java.net.URI;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -35,6 +36,12 @@ public class UsuarioController {
         Usuario obj = this.usuarioService.buscarUsuarioPorId(id);
         
         return ResponseEntity.ok().body(obj);
+    }
+
+    @GetMapping
+    public ResponseEntity<List<Usuario>> buscarTodos() {
+        List<Usuario> list = this.usuarioService.buscarTodos();
+        return ResponseEntity.ok().body(list);
     }
 
     @PostMapping
