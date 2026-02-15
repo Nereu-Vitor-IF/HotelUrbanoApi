@@ -1,6 +1,7 @@
 package com.api.hotelurbano.services;
 
 import java.time.temporal.ChronoUnit;
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,11 +25,17 @@ public class ReservaService {
     @Autowired
     private QuartoService quartoService;
 
+    @Transactional(readOnly = true)
     public Reserva buscarReservaPorId(Long id) {
         Optional<Reserva> reserva = this.reservaRepository.findById(id);
         return reserva.orElseThrow(() -> new RuntimeException(
             "Reserva não encontrada! Id: " + id 
         ));
+    }
+
+    @Transactional(readOnly = true)
+    public List<Reserva> buscarTodas() {
+        return this.reservaRepository.findAll();
     }
 
     @Transactional

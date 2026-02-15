@@ -1,5 +1,6 @@
 package com.api.hotelurbano.services;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,11 +16,17 @@ public class UsuarioService {
     @Autowired
     private UsuarioRepository usuarioRepository;
     
+    @Transactional(readOnly = true)
     public Usuario buscarUsuarioPorId(Long id) {
         Optional<Usuario> usuario = this.usuarioRepository.findById(id);
         return usuario.orElseThrow(() -> new RuntimeException(
             "Usuário não encontrado! Id: " + id
         ));
+    }
+
+    @Transactional(readOnly = true)
+    public List<Usuario> buscarTodos() {
+        return this.usuarioRepository.findAll();
     }
 
     @Transactional

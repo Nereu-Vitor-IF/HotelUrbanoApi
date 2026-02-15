@@ -1,5 +1,6 @@
 package com.api.hotelurbano.services;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,11 +16,17 @@ public class QuartoService {
     @Autowired
     private QuartoRepository quartoRepository;
 
+    @Transactional(readOnly = true)
     public Quarto buscarQuartoPorId(Long id) {
         Optional<Quarto> quarto = this.quartoRepository.findById(id);        
         return quarto.orElseThrow(() -> new RuntimeException(
             "Quarto não encontrado! Id: " + id
         ));
+    }
+
+    @Transactional(readOnly = true)
+    public List<Quarto> buscarTodos() {
+        return this.quartoRepository.findAll();
     }
 
     @Transactional
