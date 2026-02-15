@@ -40,11 +40,11 @@ public class Reserva {
     @NotNull
     private Quarto quarto;
 
-    @Column(name = "dataChekin", nullable = false)
+    @Column(name = "dataCheckin", nullable = false)
     @NotNull
     private LocalDate dataCheckin;
 
-    @Column(name = "dataChekout", nullable = false)
+    @Column(name = "dataCheckout", nullable = false)
     @NotNull
     private LocalDate dataCheckout; 
 
