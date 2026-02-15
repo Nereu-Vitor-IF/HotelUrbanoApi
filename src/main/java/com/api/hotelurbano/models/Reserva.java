@@ -49,6 +49,5 @@ public class Reserva {
     private LocalDate dataCheckout; 
 
     @Column(name = "valorTotal", nullable = false)
-    @NotNull
     private Double valorTotal;
 }
