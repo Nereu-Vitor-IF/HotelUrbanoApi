@@ -54,7 +54,7 @@ public class ReservaService {
             dias = 1;
         } 
 
-        obj.setValorTotal(dias * obj.getQuarto().getPrecoDiaria());
+        obj.setValorTotal(dias * quarto.getPrecoDiaria());
 
         obj.setIdReserva(null);
         obj.setUsuario(usuario);
