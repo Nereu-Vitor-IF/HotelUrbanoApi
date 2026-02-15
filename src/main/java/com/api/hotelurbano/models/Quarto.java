@@ -28,20 +28,21 @@ public class Quarto {
     @Column(name = "idQuarto", unique = true)
     private Long idQuarto;
 
-    @Column(nullable = false)
+    @Column(name = "numeroQuarto", nullable = false)
     @NotNull
     @NotEmpty
     private String numeroQuarto;
 
-    @Column(nullable = false)
+    @Column(name = "tipoQuarto", nullable = false)
     @NotNull
     @NotEmpty
     private String tipoQuarto;
     
-    @Column(nullable = false)
+    @Column(name = "precoDiaria", nullable = false)
     @NotNull
     private Double precoDiaria;
     
+    @Column(name = "disponivel", nullable = false)
+    @NotNull
     private Boolean disponivel = true;
-
 }
