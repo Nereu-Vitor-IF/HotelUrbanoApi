@@ -48,7 +48,7 @@ public class ReservaService {
         }
 
         // * Enum ChonoUnit foi usado para pegar as datas no banco de dados e calcular para quantos dias a reserva foi realizada
-        long dias = ChronoUnit.DAYS.between(obj.getDataEntrada(), obj.getDataSaida());
+        long dias = ChronoUnit.DAYS.between(obj.getDataCheckin(), obj.getDataCheckout());
 
         if (dias <= 0) {
             dias = 1;
