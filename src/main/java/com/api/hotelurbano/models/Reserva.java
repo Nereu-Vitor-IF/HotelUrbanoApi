@@ -40,13 +40,15 @@ public class Reserva {
     @NotNull
     private Quarto quarto;
 
-    @Column(name = "dataEntrada", nullable = false)
+    @Column(name = "dataChekin", nullable = false)
     @NotNull
-    private LocalDate dataEntrada;
+    private LocalDate dataCheckin;
 
-    @Column(name = "dataSaida", nullable = false)
+    @Column(name = "dataChekout", nullable = false)
     @NotNull
-    private LocalDate dataSaida; 
+    private LocalDate dataCheckout; 
 
+    @Column(name = "valorTotal", nullable = false)
+    @NotNull
     private Double valorTotal;
 }
