@@ -69,12 +69,19 @@ public class ReservaService {
     }
 
     @Transactional
+    public void realizarCkeckout(Long id) {
+        Reserva reserva = buscarReservaPorId(id);
+        // * Liberação do quarto para que outro cliente possa fazer a reserva
+        this.quartoService.atualizarStatus(reserva.getQuarto(), true);
+    }
+
+    @Transactional
     public void deletar(Long id) {
         Reserva obj = buscarReservaPorId(id);
         try {
             // * Liberação do quarto antes de apagar a reserva
             this.quartoService.atualizarStatus(obj.getQuarto(), true);
-            this.reservaRepository.deleteById(id);
+            this.reservaRepository.delete(obj);
         } catch (Exception e) {
             throw new RuntimeException("Não é possível excluir a reserva!");
         }

@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -48,6 +49,12 @@ public class ReservaController {
             .path("/{id}").buildAndExpand(obj.getIdReserva()).toUri();
         return ResponseEntity.created(uri).build();
     }   
+
+    @PatchMapping("/{id}/checkout")
+    public ResponseEntity<Void> checkout(@PathVariable Long id) {
+        this.reservaService.realizarCkeckout(id);
+        return ResponseEntity.noContent().build();
+    }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletar(@PathVariable Long id) {
