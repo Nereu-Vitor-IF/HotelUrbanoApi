@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import com.api.hotelurbano.dtos.UsuarioDTO;
 import com.api.hotelurbano.models.Usuario;
 import com.api.hotelurbano.models.Usuario.AtualizarUsuario;
 import com.api.hotelurbano.models.Usuario.CriarUsuario;
@@ -46,8 +47,8 @@ public class UsuarioController {
 
     @PostMapping
     @Validated(CriarUsuario.class)
-    public ResponseEntity<Void> criar(@Valid @RequestBody Usuario obj) {
-        this.usuarioService.criar(obj);
+    public ResponseEntity<Void> criar(@Valid @RequestBody UsuarioDTO dto) {
+        Usuario obj = this.usuarioService.criar(dto);
         URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
             .path("/{id}").buildAndExpand(obj.getIdUsuario()).toUri();
         return ResponseEntity.created(uri).build();
@@ -55,9 +56,8 @@ public class UsuarioController {
 
     @PutMapping("/{id}")
     @Validated(AtualizarUsuario.class)
-    public ResponseEntity<Void> atualizar(@Valid @RequestBody Usuario obj, @PathVariable Long id) {
-        obj.setIdUsuario(id);
-        this.usuarioService.atualizar(obj);
+    public ResponseEntity<Void> atualizar(@Valid @RequestBody UsuarioDTO dto, @PathVariable Long id) {
+        this.usuarioService.atualizar(dto, id);
         return ResponseEntity.noContent().build();
     }
 

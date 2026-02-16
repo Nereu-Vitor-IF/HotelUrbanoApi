@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.api.hotelurbano.dtos.UsuarioDTO;
 import com.api.hotelurbano.models.Usuario;
 import com.api.hotelurbano.repositories.UsuarioRepository;
 
@@ -30,17 +31,23 @@ public class UsuarioService {
     }
 
     @Transactional
-    public Usuario criar(Usuario obj) {
-        obj.setIdUsuario(null);
+    public Usuario criar(UsuarioDTO dto) {
+        Usuario obj = new Usuario();
+        obj.setNome(dto.nome());
+        obj.setEmail(dto.email());
+        obj.setSenha(dto.senha());
+        obj.setTelefone(dto.telefone());
+        obj.setPerfil(dto.perfil());
         obj = this.usuarioRepository.save(obj);
         return obj;
     }
 
     @Transactional
-    public Usuario atualizar(Usuario obj) {
-        Usuario novoObj = buscarUsuarioPorId(obj.getIdUsuario());
-        novoObj.setSenha(obj.getSenha());
-        return this.usuarioRepository.save(novoObj);
+    public Usuario atualizar(UsuarioDTO dto, Long id) {
+        Usuario obj = this.buscarUsuarioPorId(id);
+        obj.setSenha(dto.senha());
+        obj.setTelefone(dto.telefone());
+        return this.usuarioRepository.save(obj);
     }
 
     @Transactional
