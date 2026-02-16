@@ -1,10 +1,13 @@
 package com.api.hotelurbano.models;
 
+import com.api.hotelurbano.models.enums.PerfilEnum;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonProperty.Access;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -13,6 +16,7 @@ import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -21,6 +25,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@EqualsAndHashCode(of = "idUsuario")
 @Entity
 @Table(name = Usuario.NOME_TABELA)
 public class Usuario {
@@ -55,5 +60,9 @@ public class Usuario {
     @NotEmpty(groups = {CriarUsuario.class, AtualizarUsuario.class})
     @Size(groups = {CriarUsuario.class, AtualizarUsuario.class}, min = 8, max = 60)
     private String senha;
+
+    @Enumerated(EnumType.STRING)
+    @NotNull
+    private PerfilEnum perfil;
 
 }
