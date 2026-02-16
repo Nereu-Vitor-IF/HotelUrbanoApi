@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import com.api.hotelurbano.dtos.QuartoDTO;
 import com.api.hotelurbano.models.Quarto;
 import com.api.hotelurbano.services.QuartoService;
 
@@ -43,17 +44,16 @@ public class QuartoController {
     }
 
     @PostMapping
-    public ResponseEntity<Void> criar(@Valid @RequestBody Quarto obj) {
-        this.quartoService.criar(obj);
+    public ResponseEntity<Void> criar(@Valid @RequestBody QuartoDTO dto) {
+        Quarto obj = this.quartoService.criar(dto);
         URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
             .path("/{id}").buildAndExpand(obj.getIdQuarto()).toUri();
         return ResponseEntity.created(uri).build();
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Void> atualizar(@Valid @RequestBody Quarto obj, @PathVariable Long id) {
-        obj.setIdQuarto(id);
-        this.quartoService.atualizar(obj);
+    public ResponseEntity<Void> atualizar(@Valid @RequestBody QuartoDTO dto, @PathVariable Long id) {    
+        this.quartoService.atualizar(dto, id);
         return ResponseEntity.noContent().build();
     }
 

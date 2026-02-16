@@ -9,6 +9,7 @@ import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -17,6 +18,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@EqualsAndHashCode(of = "idQuarto")
 @Entity
 @Table(name = Quarto.NOME_TABELA)
 public class Quarto {
@@ -45,4 +47,10 @@ public class Quarto {
     @Column(name = "disponivel", nullable = false)
     @NotNull
     private Boolean disponivel = true;
+    
+    @Column(name = "descricao", nullable = true)
+    private String descricao;
+
+    @Column(name = "urlImagem", nullable = true)
+    private String urlImagem;
 }

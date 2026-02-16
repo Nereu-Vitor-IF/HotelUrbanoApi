@@ -12,5 +12,4 @@ public record UsuarioDTO(
     @NotNull @NotEmpty String senha,
     @NotNull @NotEmpty String telefone,
     @NotNull PerfilEnum perfil
-) {    
-}
+) {}
