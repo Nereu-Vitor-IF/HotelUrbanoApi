@@ -62,7 +62,7 @@ public class ReservaService {
 
         obj = this.reservaRepository.save(obj);
 
-        this.quartoService.atualizarStatus(quarto, false);
+        this.quartoService.atualizarStatus(quarto.getIdQuarto(), false);
 
         return obj;
         
@@ -72,7 +72,7 @@ public class ReservaService {
     public void realizarCkeckout(Long id) {
         Reserva reserva = buscarReservaPorId(id);
         // * Liberação do quarto para que outro cliente possa fazer a reserva
-        this.quartoService.atualizarStatus(reserva.getQuarto(), true);
+        this.quartoService.atualizarStatus(reserva.getQuarto().getIdQuarto(), true);
     }
 
     @Transactional
@@ -80,7 +80,7 @@ public class ReservaService {
         Reserva obj = buscarReservaPorId(id);
         try {
             // * Liberação do quarto antes de apagar a reserva
-            this.quartoService.atualizarStatus(obj.getQuarto(), true);
+            this.quartoService.atualizarStatus(obj.getQuarto().getIdQuarto(), true);
             this.reservaRepository.delete(obj);
         } catch (Exception e) {
             throw new RuntimeException("Não é possível excluir a reserva!");
