@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import com.api.hotelurbano.dtos.ReservaDTO;
 import com.api.hotelurbano.models.Reserva;
 import com.api.hotelurbano.services.ReservaService;
 
@@ -43,16 +44,22 @@ public class ReservaController {
     }
 
     @PostMapping
-    public ResponseEntity<Void> criar(@Valid @RequestBody Reserva obj) {
-        this.reservaService.criar(obj);
+    public ResponseEntity<Void> criar(@Valid @RequestBody ReservaDTO dto) {
+        Reserva obj = this.reservaService.criar(dto);
         URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
             .path("/{id}").buildAndExpand(obj.getIdReserva()).toUri();
         return ResponseEntity.created(uri).build();
     }   
 
+    @PatchMapping("/{id}/checkin")
+    public ResponseEntity<Void> checkin(@PathVariable Long id) {
+        this.reservaService.realizarCkeckIn(id);
+        return ResponseEntity.noContent().build();
+    }
+
     @PatchMapping("/{id}/checkout")
     public ResponseEntity<Void> checkout(@PathVariable Long id) {
-        this.reservaService.realizarCkeckout(id);
+        this.reservaService.realizarCkeckOut(id);
         return ResponseEntity.noContent().build();
     }
 
