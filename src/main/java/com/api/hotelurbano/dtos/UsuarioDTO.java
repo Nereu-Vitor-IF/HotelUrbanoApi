@@ -10,6 +10,6 @@ public record UsuarioDTO(
     @NotNull @NotEmpty String nome,
     @NotNull @NotEmpty @Email String email,
     @NotNull @NotEmpty String senha,
-    @NotNull @NotEmpty String telefone,
-    @NotNull PerfilEnum perfil
+    @NotNull PerfilEnum perfil,
+    String telefone
 ) {}
