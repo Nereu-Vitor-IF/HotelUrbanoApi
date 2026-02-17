@@ -2,8 +2,12 @@ package com.api.hotelurbano.models;
 
 import java.time.LocalDate;
 
+import com.api.hotelurbano.models.enums.StatusReserva;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -40,14 +44,19 @@ public class Reserva {
     @NotNull
     private Quarto quarto;
 
-    @Column(name = "dataCheckin", nullable = false)
+    @Column(name = "dataCheckIn", nullable = false)
     @NotNull
-    private LocalDate dataCheckin;
+    private LocalDate dataCheckIn;
 
-    @Column(name = "dataCheckout", nullable = false)
+    @Column(name = "dataCheckOut", nullable = false)
     @NotNull
-    private LocalDate dataCheckout; 
+    private LocalDate dataCheckOut; 
 
     @Column(name = "valorTotal", nullable = false)
+    @NotNull
     private Double valorTotal;
+
+    @Enumerated(EnumType.STRING)
+    @NotNull
+    private StatusReserva status = StatusReserva.CONFIRMADA;
 }
