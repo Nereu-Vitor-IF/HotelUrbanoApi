@@ -10,6 +10,8 @@ import org.springframework.transaction.annotation.Transactional;
 import com.api.hotelurbano.dtos.UsuarioDTO;
 import com.api.hotelurbano.models.Usuario;
 import com.api.hotelurbano.repositories.UsuarioRepository;
+import com.api.hotelurbano.services.exceptions.DataBindingViolationException;
+import com.api.hotelurbano.services.exceptions.ObjectNotFoundException;
 
 @Service
 public class UsuarioService {
@@ -20,7 +22,7 @@ public class UsuarioService {
     @Transactional(readOnly = true)
     public Usuario buscarUsuarioPorId(Long id) {
         Optional<Usuario> usuario = this.usuarioRepository.findById(id);
-        return usuario.orElseThrow(() -> new RuntimeException(
+        return usuario.orElseThrow(() -> new ObjectNotFoundException(
             "Usuário não encontrado! Id: " + id
         ));
     }
@@ -56,7 +58,7 @@ public class UsuarioService {
         try {
             this.usuarioRepository.deleteById(id);
         } catch (Exception e) {
-            throw new RuntimeException("Não é possível excluir pois há reservas relacionadas!");
+            throw new DataBindingViolationException("Não é possível excluir pois há reservas relacionadas!");
         }
     }
 

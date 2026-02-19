@@ -10,6 +10,8 @@ import org.springframework.transaction.annotation.Transactional;
 import com.api.hotelurbano.dtos.QuartoDTO;
 import com.api.hotelurbano.models.Quarto;
 import com.api.hotelurbano.repositories.QuartoRepository;
+import com.api.hotelurbano.services.exceptions.DataBindingViolationException;
+import com.api.hotelurbano.services.exceptions.ObjectNotFoundException;
 
 @Service
 public class QuartoService {
@@ -20,7 +22,7 @@ public class QuartoService {
     @Transactional(readOnly = true)
     public Quarto buscarQuartoPorId(Long id) {
         Optional<Quarto> quarto = this.quartoRepository.findById(id);        
-        return quarto.orElseThrow(() -> new RuntimeException(
+        return quarto.orElseThrow(() -> new ObjectNotFoundException(
             "Quarto não encontrado! Id: " + id
         ));
     }
@@ -68,7 +70,7 @@ public class QuartoService {
         try {
             this.quartoRepository.deleteById(id);
         } catch (Exception e) {
-            throw new RuntimeException("Não é possível excluir pois há reservas para esse quarto!");
+            throw new DataBindingViolationException("Não é possível excluir pois há reservas para esse quarto!");
         }
     }
     

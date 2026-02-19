@@ -14,6 +14,8 @@ import com.api.hotelurbano.models.Reserva;
 import com.api.hotelurbano.models.Usuario;
 import com.api.hotelurbano.models.enums.StatusReserva;
 import com.api.hotelurbano.repositories.ReservaRepository;
+import com.api.hotelurbano.services.exceptions.DataBindingViolationException;
+import com.api.hotelurbano.services.exceptions.ObjectNotFoundException;
 
 @Service
 public class ReservaService {
@@ -30,7 +32,7 @@ public class ReservaService {
     @Transactional(readOnly = true)
     public Reserva buscarReservaPorId(Long id) {
         Optional<Reserva> reserva = this.reservaRepository.findById(id);
-        return reserva.orElseThrow(() -> new RuntimeException(
+        return reserva.orElseThrow(() -> new ObjectNotFoundException(
             "Reserva não encontrada! Id: " + id 
         ));
     }
@@ -99,7 +101,7 @@ public class ReservaService {
             this.quartoService.atualizarStatus(obj.getQuarto().getIdQuarto(), true);
             this.reservaRepository.delete(obj);
         } catch (Exception e) {
-            throw new RuntimeException("Não é possível excluir a reserva!");
+            throw new DataBindingViolationException("Não é possível excluir a reserva!");
         }
     }
 
