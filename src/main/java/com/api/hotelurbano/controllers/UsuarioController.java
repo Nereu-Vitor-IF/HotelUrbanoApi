@@ -22,8 +22,6 @@ import com.api.hotelurbano.models.Usuario.AtualizarUsuario;
 import com.api.hotelurbano.models.Usuario.CriarUsuario;
 import com.api.hotelurbano.services.UsuarioService;
 
-import jakarta.validation.Valid;
-
 @RestController
 @RequestMapping("/usuario")
 @Validated
@@ -47,7 +45,7 @@ public class UsuarioController {
 
     @PostMapping
     @Validated(CriarUsuario.class)
-    public ResponseEntity<Void> criar(@Valid @RequestBody UsuarioDTO dto) {
+    public ResponseEntity<Void> criar(@RequestBody UsuarioDTO dto) {
         Usuario obj = this.usuarioService.criar(dto);
         URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
             .path("/{id}").buildAndExpand(obj.getIdUsuario()).toUri();
@@ -56,7 +54,7 @@ public class UsuarioController {
 
     @PutMapping("/{id}")
     @Validated(AtualizarUsuario.class)
-    public ResponseEntity<Void> atualizar(@Valid @RequestBody UsuarioDTO dto, @PathVariable Long id) {
+    public ResponseEntity<Void> atualizar(@RequestBody UsuarioDTO dto, @PathVariable Long id) {
         this.usuarioService.atualizar(dto, id);
         return ResponseEntity.noContent().build();
     }
