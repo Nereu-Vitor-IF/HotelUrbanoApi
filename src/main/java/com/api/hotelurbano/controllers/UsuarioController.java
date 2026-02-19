@@ -44,17 +44,15 @@ public class UsuarioController {
     }
 
     @PostMapping
-    @Validated(CriarUsuario.class)
-    public ResponseEntity<Void> criar(@RequestBody UsuarioDTO dto) {
+    public ResponseEntity<Void> criar(@RequestBody  @Validated(CriarUsuario.class) UsuarioDTO dto) {
         Usuario obj = this.usuarioService.criar(dto);
         URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
             .path("/{id}").buildAndExpand(obj.getIdUsuario()).toUri();
         return ResponseEntity.created(uri).build();
     }
 
-    @PutMapping("/{id}")
-    @Validated(AtualizarUsuario.class)
-    public ResponseEntity<Void> atualizar(@RequestBody UsuarioDTO dto, @PathVariable Long id) {
+    @PutMapping("/{id}")    
+    public ResponseEntity<Void> atualizar(@RequestBody @Validated(AtualizarUsuario.class) UsuarioDTO dto, @PathVariable Long id) {
         this.usuarioService.atualizar(dto, id);
         return ResponseEntity.noContent().build();
     }
