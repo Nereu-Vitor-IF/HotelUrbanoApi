@@ -73,9 +73,17 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         String errorMessage = dataIntegrityViolationException.getMostSpecificCause().getMessage();
         log.error("Falha de integridade no banco: " + errorMessage, dataIntegrityViolationException);
 
+                String messageToUser = "Erro de integridade de dados.";
+
+                if (errorMessage != null && errorMessage.contains("email")) {
+                    messageToUser = "Este email já está cadastrado no sistema.";
+                } else if (errorMessage != null && errorMessage.contains("telefone")) {
+                    messageToUser = "Este telefone já está em uso por outro usuário.";
+                }
+
         return buildErrorResponse(
                 dataIntegrityViolationException,
-                errorMessage,
+                messageToUser,
                 HttpStatus.CONFLICT,
                 request);
     }
