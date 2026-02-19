@@ -12,7 +12,8 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
@@ -41,23 +42,21 @@ public class Usuario {
     private Long idUsuario;
 
     @Column(name = "nome", length = 100, nullable = false)
-    @NotNull
-    @NotEmpty
+    @NotBlank(groups = CriarUsuario.class)
     private String nome;
 
     @Column(name = "telefone", length = 15, nullable = true)
     private String telefone;
         
     @Column(name = "email", length = 100, nullable = false, unique = true)
-    @NotNull(groups = CriarUsuario.class)
-    @NotEmpty(groups = CriarUsuario.class)
+    @NotBlank(groups = CriarUsuario.class)
+    @Email(groups = CriarUsuario.class)    
     @Size(groups = CriarUsuario.class, min = 2, max = 100)
     private String email;
     
     @JsonProperty(access = Access.WRITE_ONLY)
     @Column(name = "senha", length = 60, nullable = false)
-    @NotNull(groups = {CriarUsuario.class, AtualizarUsuario.class})
-    @NotEmpty(groups = {CriarUsuario.class, AtualizarUsuario.class})
+    @NotBlank(groups = {CriarUsuario.class, AtualizarUsuario.class})
     @Size(groups = {CriarUsuario.class, AtualizarUsuario.class}, min = 8, max = 60)
     private String senha;
 
