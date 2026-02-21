@@ -1,30 +1,32 @@
 package com.api.hotelurbano.models;
 
+import java.util.HashSet;
+import java.util.Set;
+import java.util.stream.Collectors;
+
 import com.api.hotelurbano.models.enums.PerfilEnum;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonProperty.Access;
 
+import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
+import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
-@NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(of = "idUsuario")
 @Entity
@@ -60,8 +62,24 @@ public class Usuario {
     @Size(groups = {CriarUsuario.class, AtualizarUsuario.class}, min = 8, max = 60)
     private String senha;
 
-    @Enumerated(EnumType.STRING)
-    @NotNull
-    private PerfilEnum perfil;
+    // * Define uma coleção de perfis que será salva em uma tabela auxiliar    
+    @ElementCollection(fetch = FetchType.EAGER)
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    @CollectionTable(name = "perfil_usuario")
+    @Column(name = "perfil", nullable = false)
+    private Set<Integer> perfis = new HashSet<>();
 
+    // * Converte a coleção de números inteiros do banco para o tipo Enum que o Java e o Spring Security utilizam
+    public Set<PerfilEnum> getPerfis() {
+        return this.perfis.stream().map(x -> PerfilEnum.toEnum(x)).collect(Collectors.toSet());
+    }
+
+    // * Adiciona um novo perfil à coleção, garantindo que apenas o código identificador seja persistido
+    public void addPerfil(PerfilEnum perfil) {
+        this.perfis.add(perfil.getCod());
+    }
+
+    public Usuario() {
+        this.addPerfil(PerfilEnum.CLIENTE);
+    }
 }

@@ -1,5 +1,7 @@
 package com.api.hotelurbano.dtos;
 
+import java.util.Set;
+
 import com.api.hotelurbano.models.Usuario.AtualizarUsuario;
 import com.api.hotelurbano.models.Usuario.CriarUsuario;
 import com.api.hotelurbano.models.enums.PerfilEnum;
@@ -22,8 +24,8 @@ public record UsuarioDTO(
     @Size(groups = {CriarUsuario.class, AtualizarUsuario.class}, min = 8, max = 60)
     String senha,
     
-    @NotNull 
-    PerfilEnum perfil,
+    @NotNull(groups = CriarUsuario.class)
+    Set<PerfilEnum> perfis,
     
     String telefone
 ) {}
