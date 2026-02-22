@@ -2,9 +2,12 @@ package com.api.hotelurbano.config;
 
 import java.util.Arrays;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -15,10 +18,15 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+import com.api.hotelurbano.security.JWTUtil;
+
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
 public class SecurityConfig {
+
+    @Autowired 
+    private JWTUtil jwtUtil;
 
     private final String[] PUBLIC_MATCHERS = {
             "/"
@@ -35,7 +43,7 @@ public class SecurityConfig {
 
         // * Desabilita CSRF e ativa o CORS
         http.cors(cors -> cors.configure(http))
-            .csrf(csrf -> csrf.disable());
+            .csrf(csrf -> csrf.disable());        
 
         // * Define as regras de autorização de requisições
         http.authorizeHttpRequests(auth -> auth
@@ -56,7 +64,7 @@ public class SecurityConfig {
     @Bean
     CorsConfigurationSource corsConfigurationSource() {
         
-        // *Cria um objeto de configuração com os valores padrão de permissão
+        // * Cria um objeto de configuração com os valores padrão de permissão
         CorsConfiguration configuration = new CorsConfiguration().applyPermitDefaultValues();
 
         // * Define explicitamente quais métodos HTTP o Front-end poderá usar
@@ -68,6 +76,12 @@ public class SecurityConfig {
 
         return source;
     }    
+
+    // * Este método configura o gerenciador de autenticação do Spring Security.
+    @Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
+        return authenticationConfiguration.getAuthenticationManager();
+    }
 
     // * Define o algoritmo de criptografia de senha que será usado em toda a aplicação
     @Bean
