@@ -52,7 +52,7 @@ public class UsuarioService {
         // * Se o DTO trouxer perfis, eles ão adicionados um a um.
         // * Caso contrário, o sistema define automaticamente o perfil "CLIENTE" como padrão 
         if (Objects.nonNull(dto.perfis()) && !dto.perfis().isEmpty()) {
-            dto.perfis().forEach(perfil -> obj.addPerfil(perfil));
+            dto.perfis().stream().forEach(perfil -> obj.addPerfil(perfil));                
         } else {
             obj.addPerfil(PerfilEnum.CLIENTE);
         }
