@@ -9,6 +9,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import tools.jackson.databind.ObjectMapper;
 
 @Getter
 @Setter
@@ -30,9 +31,20 @@ public class ErrorResponse {
 
     public void addValidationError(String field, String message) {
         if (Objects.isNull(erros)) {
-            this.erros = new ArrayList<>();            
+            this.erros = new ArrayList<>();
         }
-        this.erros.add(new ValidationError(field, message));        
-    }    
+        this.erros.add(new ValidationError(field, message));
+    }
+
+    // * Converte o objeto de erro atual em um a String JSON usando o ObjectMapper. 
+    // * Usado para enviar respostas de erros manuais em filtros de segurança.
+    public String toJson() {
+        try {
+            return new ObjectMapper().writeValueAsString(this);
+        } catch (Exception e) {
+            return "{\"status\": " + this.getStatus() + ", " +
+                    "\"message\": \"Erro na conversão dos dados\"}";
+        }
+    }
 
 }

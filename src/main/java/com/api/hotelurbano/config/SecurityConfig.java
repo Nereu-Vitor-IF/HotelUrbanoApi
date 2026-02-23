@@ -18,6 +18,8 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+import com.api.hotelurbano.exceptions.GlobalExceptionHandler;
+import com.api.hotelurbano.security.JWTAuthenticationFilter;
 import com.api.hotelurbano.security.JWTUtil;
 
 @Configuration
@@ -41,6 +43,12 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
+        AuthenticationManager authenticationManager = authenticationManager(http.getSharedObject(AuthenticationConfiguration.class));
+
+        JWTAuthenticationFilter jwtFilter = new JWTAuthenticationFilter(authenticationManager, jwtUtil);
+
+        jwtFilter.setFilterProcessesUrl("/login");
+
         // * Desabilita CSRF e ativa o CORS
         http.cors(cors -> cors.configure(http))
             .csrf(csrf -> csrf.disable());        
@@ -56,6 +64,12 @@ public class SecurityConfig {
         // * Define que a aplicação não guadará estado de sessão no servidor
         http.sessionManagement(session -> session
             .sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+
+        http.exceptionHandling(exception -> exception
+            .authenticationEntryPoint(new GlobalExceptionHandler())
+        );
+
+        http.addFilter(jwtFilter);
 
         return http.build();
     }
