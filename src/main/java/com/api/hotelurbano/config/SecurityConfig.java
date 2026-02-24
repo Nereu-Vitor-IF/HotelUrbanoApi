@@ -7,6 +7,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -65,9 +66,10 @@ public class SecurityConfig {
 
         jwtFilter.setFilterProcessesUrl("/login");
 
+        http.cors(Customizer.withDefaults());
+
         // * Desabilita CSRF e ativa o CORS
-        http.cors(cors -> cors.configure(http))
-                .csrf(csrf -> csrf.disable());
+        http.csrf(csrf -> csrf.disable());
 
         // * Define as regras de autorização de requisições
         http.authorizeHttpRequests(auth -> auth
@@ -111,8 +113,17 @@ public class SecurityConfig {
         // * Cria um objeto de configuração com os valores padrão de permissão
         CorsConfiguration configuration = new CorsConfiguration().applyPermitDefaultValues();
 
+        // * Define quais "origens" podem acessar a API
+        configuration.setAllowedOrigins(Arrays.asList("http://127.0.0.1:5500", "http://localhost:5500", "http://localhost:8080"));
+        
         // * Define explicitamente quais métodos HTTP o Front-end poderá usar
-        configuration.setAllowedMethods(Arrays.asList("POST", "GET", "PUT", "DELETE"));
+        configuration.setAllowedMethods(Arrays.asList("POST", "GET", "PUT", "DELETE", "OPTIONS"));
+        
+        // * Permite que o Front-end envie o Token JWT nos cabeçalhos
+        configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type", "Cache-Control"));
+        
+        // * Expõe o Header "Authorization" para o script JS conseguir ler o Token no Login 
+        configuration.setExposedHeaders(Arrays.asList("Authorization"));
 
         // * Aplica essa configuração a todas as rotas da API(/**)
         final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
