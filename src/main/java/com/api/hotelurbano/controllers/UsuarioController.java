@@ -23,7 +23,7 @@ import com.api.hotelurbano.models.Usuario.CriarUsuario;
 import com.api.hotelurbano.services.UsuarioService;
 
 @RestController
-@RequestMapping("/usuario")
+@RequestMapping("/usuarios")
 @Validated
 public class UsuarioController {
     

@@ -36,6 +36,31 @@ public class JWTUtil {
         return Keys.hmacShaKeyFor(keyBytes);
     }
 
+    
+    public boolean isValidToken(String token) {
+        Claims claims = getClaims(token);
+        if (Objects.nonNull(claims)) {
+            String email = claims.getSubject();
+            Date expiration = claims.getExpiration();
+            Date now = new Date(System.currentTimeMillis());
+            
+            if (Objects.nonNull(email) && Objects.nonNull(expiration) && now.before(expiration)) {
+                return true;
+            }
+        }
+        
+        return false;
+    }
+
+    public String getEmail(String token) {
+        Claims claims = getClaims(token);
+        if (Objects.nonNull(claims)) {
+            return claims.getSubject().toString();
+        }
+        
+        return null;
+    }
+
     private Claims getClaims(String token) {
         try {
             return Jwts.parser()
@@ -47,20 +72,5 @@ public class JWTUtil {
             return null;
         }
     }
-
-    public boolean isValidToken(String token) {
-        Claims claims = getClaims(token);
-        if (Objects.nonNull(claims)) {
-            String email = claims.getSubject();
-            Date expiration = claims.getExpiration();
-            Date now = new Date(System.currentTimeMillis());
-
-            if (Objects.nonNull(email) && Objects.nonNull(expiration) && now.before(expiration)) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
+    
 }

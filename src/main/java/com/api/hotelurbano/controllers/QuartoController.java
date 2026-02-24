@@ -23,7 +23,7 @@ import com.api.hotelurbano.services.QuartoService;
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("/quarto")
+@RequestMapping("/quartos")
 @Validated
 public class QuartoController {
 

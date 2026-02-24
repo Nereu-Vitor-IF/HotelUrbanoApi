@@ -12,6 +12,7 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
@@ -20,6 +21,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import com.api.hotelurbano.exceptions.GlobalExceptionHandler;
 import com.api.hotelurbano.security.JWTAuthenticationFilter;
+import com.api.hotelurbano.security.JWTAuthorizationFilter;
 import com.api.hotelurbano.security.JWTUtil;
 
 @Configuration
@@ -27,57 +29,85 @@ import com.api.hotelurbano.security.JWTUtil;
 @EnableMethodSecurity
 public class SecurityConfig {
 
-    @Autowired 
+    @Autowired
+    private UserDetailsService userDetailsService;
+
+    @Autowired
     private JWTUtil jwtUtil;
 
-    private final String[] PUBLIC_MATCHERS = {
-            "/"
+    // * Lista de URLS que qualquer pessoa sem login pode acessar
+    private final String[] PUBLIC_MATCHERS_GET = {
+            "/quartos/**"
     };
 
-    // * Lista URLs que aceitam o método POST sem estar logado
+    // * Lista de URLs que aceitam o método POST sem estar logado
     private final String[] PUBLIC_MATCHERS_POST = {
-            "/usuario",
+            "/usuarios",
             "/login"
+    };
+
+    // * Lista de URLs que só o ADMIN tem acesso
+    private final String[] ADMIN_MATCHERS = {
+            "/quartos/**",
+            "/reservas/**"
     };
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
-        AuthenticationManager authenticationManager = authenticationManager(http.getSharedObject(AuthenticationConfiguration.class));
+        AuthenticationManager authenticationManager = authenticationManager(
+                http.getSharedObject(AuthenticationConfiguration.class));
 
         JWTAuthenticationFilter jwtFilter = new JWTAuthenticationFilter(authenticationManager, jwtUtil);
+
+        JWTAuthorizationFilter authFilter = new JWTAuthorizationFilter(authenticationManager, jwtUtil,
+                userDetailsService);
 
         jwtFilter.setFilterProcessesUrl("/login");
 
         // * Desabilita CSRF e ativa o CORS
         http.cors(cors -> cors.configure(http))
-            .csrf(csrf -> csrf.disable());        
+                .csrf(csrf -> csrf.disable());
 
         // * Define as regras de autorização de requisições
         http.authorizeHttpRequests(auth -> auth
-            .requestMatchers(HttpMethod.POST, PUBLIC_MATCHERS_POST)
-            .permitAll() // * Libera o cadastro e o login para qualquer pessoa
-            .requestMatchers(PUBLIC_MATCHERS)
-            .permitAll() // * Libera outras rotas públicas gerais
-            .anyRequest().authenticated()); // * Qualquer outra rota exige login
+
+                // * Libera a leitura para visitantes
+                .requestMatchers(HttpMethod.GET, PUBLIC_MATCHERS_GET)
+                .permitAll()
+
+                // * Libera o cadastro e o login para visitantes
+                .requestMatchers(HttpMethod.POST, PUBLIC_MATCHERS_POST)
+                .permitAll()
+
+                // * Tranca total dos quartos (POST, PUT, DELETE), somente admin tem acesso
+                .requestMatchers(HttpMethod.POST, ADMIN_MATCHERS)
+                .hasRole("ADMIN")
+                .requestMatchers(HttpMethod.PUT, ADMIN_MATCHERS)
+                .hasRole("ADMIN")
+                .requestMatchers(HttpMethod.DELETE, ADMIN_MATCHERS)
+                .hasRole("ADMIN")
+
+                .anyRequest().authenticated()); // * Qualquer outra rota exige login
 
         // * Define que a aplicação não guadará estado de sessão no servidor
         http.sessionManagement(session -> session
-            .sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
         http.exceptionHandling(exception -> exception
-            .authenticationEntryPoint(new GlobalExceptionHandler())
-        );
+                .authenticationEntryPoint(new GlobalExceptionHandler()));
 
         http.addFilter(jwtFilter);
+        http.addFilter(authFilter);
 
         return http.build();
     }
 
-    // * Define as configurações de CORS, para garantir que o Front-end acesse o Back-end    
+    // * Define as configurações de CORS, para garantir que o Front-end acesse o
+    // Back-end
     @Bean
     CorsConfigurationSource corsConfigurationSource() {
-        
+
         // * Cria um objeto de configuração com os valores padrão de permissão
         CorsConfiguration configuration = new CorsConfiguration().applyPermitDefaultValues();
 
@@ -89,15 +119,17 @@ public class SecurityConfig {
         source.registerCorsConfiguration("/**", configuration);
 
         return source;
-    }    
+    }
 
     // * Este método configura o gerenciador de autenticação do Spring Security.
     @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration)
+            throws Exception {
         return authenticationConfiguration.getAuthenticationManager();
     }
 
-    // * Define o algoritmo de criptografia de senha que será usado em toda a aplicação
+    // * Define o algoritmo de criptografia de senha que será usado em toda a
+    // aplicação
     @Bean
     public BCryptPasswordEncoder bCryptPasswordEncoder() {
         return new BCryptPasswordEncoder();

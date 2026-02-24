@@ -23,7 +23,7 @@ import com.api.hotelurbano.services.ReservaService;
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("/reserva")
+@RequestMapping("/reservas")
 @Validated
 public class ReservaController {
     
