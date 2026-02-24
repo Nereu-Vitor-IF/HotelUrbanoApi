@@ -114,7 +114,7 @@ public class SecurityConfig {
         CorsConfiguration configuration = new CorsConfiguration().applyPermitDefaultValues();
 
         // * Define quais "origens" podem acessar a API
-        configuration.setAllowedOrigins(Arrays.asList("http://127.0.0.1:5500", "http://localhost:5500", "http://localhost:8080"));
+        configuration.setAllowedOrigins(Arrays.asList("*"));
         
         // * Define explicitamente quais métodos HTTP o Front-end poderá usar
         configuration.setAllowedMethods(Arrays.asList("POST", "GET", "PUT", "DELETE", "OPTIONS"));
